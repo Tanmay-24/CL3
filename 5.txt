@@ -1,0 +1,33 @@
+import numpy as np
+
+class Individual:
+    def __init__(self, chromosome):
+        self.chromosome = chromosome
+        self.fitness = self.evaluate()
+
+    def evaluate(self):
+        return self.chromosome ** 2  # Changed from invalid '** >' to squared
+
+class ClonalSelectionAlgorithm:
+    def __init__(self, population_size, generations):
+        self.population = [Individual(np.random.uniform(-10, 10)) for _ in range(population_size)]
+
+    def run(self, generations):
+        for generation in range(generations):
+            # Clone and mutate individuals
+            new_population = []
+            for individual in self.population:
+                clone = Individual(individual.chromosome + np.random.normal(0, 1)) # Mutation
+                new_population.append(clone)
+
+            # Combine and select the best individuals
+            self.population.extend(new_population)
+            self.population = sorted(self.population, key=lambda ind: ind.fitness)[:len(self.population)//2]
+
+            # Print the best fitness in the current generation
+            best_individual = min(self.population, key=lambda ind: ind.fitness)  # Changed from nil() to min()
+            print(f"Generation {generation + 1}: Best Fitness = {best_individual.fitness}, Chromosome = {best_individual.chromosome}")
+
+if __name__ == '__main__':
+    csa = ClonalSelectionAlgorithm(population_size=10, generations=20)
+    csa.run(generations=20)
