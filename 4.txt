@@ -1,0 +1,17 @@
+import random 
+
+class Loadbalancer:
+    def __init__(self,servers):
+        self.servers = servers
+    def random_selection(self):
+        return random.choice(self.servers)
+    def simulate_client_requests(self,num_requests):
+        for i in range(num_requests):
+            print(f"Request {i+1}:",end = "")
+            
+            server_random = self.random_selection()
+            print(f" Random - Server{server_random}")
+            
+servers = ['Server A','Server B','Server C']
+load_balancer = Loadbalancer(servers)
+load_balancer.simulate_client_requests(10)
