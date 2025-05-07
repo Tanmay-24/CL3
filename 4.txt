@@ -1,17 +1,17 @@
-import random 
+from sklearn.cluster import KMeans
+import matplotlib.pyplot as plt
+import pandas as pd
 
-class Loadbalancer:
-    def __init__(self,servers):
-        self.servers = servers
-    def random_selection(self):
-        return random.choice(self.servers)
-    def simulate_client_requests(self,num_requests):
-        for i in range(num_requests):
-            print(f"Request {i+1}:",end = "")
-            
-            server_random = self.random_selection()
-            print(f" Random - Server{server_random}")
-            
-servers = ['Server A','Server B','Server C']
-load_balancer = Loadbalancer(servers)
-load_balancer.simulate_client_requests(10)
+df = pd.read_csv("iris_dataset.csv")
+X = df.drop(columns="target")
+kmeans = KMeans(n_clusters=3)
+kmeans.fit(X)
+
+centroids = kmeans.cluster_centers_
+labels = kmeans.labels_
+
+plt.scatter(X["sepal length (cm)"], X["sepal width (cm)"], c=labels)
+plt.scatter(centroids[:,0], centroids[:,1])
+plt.title("K-Means Clustering")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")

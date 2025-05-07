@@ -1,40 +1,38 @@
-class Uniqueword():
-    def __init__(self, filename):  # Fixed constructor name
-        with open(filename, 'r') as f:
-            self.data = f.read().strip()
-    
-    def mapper(self):
-        self.words = self.data.split()  # split() without arg handles multiple spaces
-    
-    def reducer(self):
-        unique_words = set(self.words)
-        for word in unique_words:
-            print(word)
+import pandas as pd
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
 
-# Usage (outside class)
-word_processor = Uniqueword('words.txt')
-word_processor.mapper()
-word_processor.reducer()
 
-class Counting():  # Fixed class name convention
-    def __init__(self, filename):
-        with open(filename, 'r') as f:
-            self.data = f.read().strip()
-    
-    def mapper(self):
-        self.chars = list(self.data)  # Convert string to character list
-    
-    def reducer(self):
-        count = {}
-        for char in self.chars:
-            if char in count:
-                count[char] += 1
-            else:
-                count[char] = 1
-        for char, cnt in count.items():  # Proper dictionary iteration
-            print(f"'{char}': {cnt}")
+# Sklearn iris dataset
+iris = load_iris()
+X = iris.data  
+Y = iris.target
 
-# Usage
-counter = Counting('words.txt')
-counter.mapper()
-counter.reducer()
+
+# For local data
+df = pd.read_csv("iris_dataset.csv")
+X = df.drop(columns="target")
+Y = df["target"]
+x_train, x_test, y_train, y_test = train_test_split(X, Y, test_size=0.2)
+
+# Scaling
+scaler = StandardScaler()
+x_train_scaled = scaler.fit_transform(x_train)
+x_test_scaled = scaler.transform(x_test)
+
+# Classification
+model = LogisticRegression()
+model.fit(x_train_scaled, y_train)
+
+y_pred_train = model.predict(x_train_scaled)
+y_pred_test = model.predict(x_test_scaled)
+
+train_accuracy = accuracy_score(y_train, y_pred_train)
+test_accuracy = accuracy_score(y_test, y_pred_test)
+
+print("Training accuracy: ",train_accuracy)
+print("Test accuracy: ",test_accuracy)
+print("Classification Report: ", classification_report(y_test, y_pred_test))

@@ -1,35 +1,21 @@
-import numpy as np
-from sklearn.datasets import make_classification
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report, confusion_matrix
+def mapper(score):
+    if score > 80:
+        grade = "A"
+    elif score > 60:
+        grade = "B"
+    elif score > 40:
+        grade = "C"
+    else:
+        grade = "D"
+    return grade
 
-class SimpleAIS:
-    def __init__(self, n_classes):
-        self.immune_cells = np.random.rand(n_classes, 2)  # Random initial immune cells
+def reducer(score_list):
+    new_scores=[]
+    for row in score_list:
+        grade = mapper(row[1])
+        new_scores.append((row[0], grade))
+    for row in new_scores:
+        print(row)
 
-    def update_cells(self, data, labels):
-        for i in range(len(self.immune_cells)):
-            self.immune_cells[i] = np.mean(data[labels == i], axis=0)
-
-    def classify(self, data):
-        return np.argmin(np.linalg.norm(data[:, np.newaxis] - self.immune_cells, axis=2), axis=1)
-
-# Generate synthetic data
-X, y = make_classification(n_samples=500, n_features=2, n_informative=2, 
-                          n_redundant=0, n_repeated=0, n_classes=2, 
-                          random_state=42)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, 
-                                                   random_state=42)
-
-# Initialize and train the AIS
-ais = SimpleAIS(n_classes=2)
-ais.update_cells(X_train, y_train)
-
-# Classify the test data
-y_pred = ais.classify(X_test)
-
-# Evaluate the results
-print("Classification Report:")
-print(classification_report(y_test, y_pred))
-print("\nConfusion Matrix:")
-print(confusion_matrix(y_test, y_pred))
+student_scores = [(1,85), (2,75), (3,55), (4,35), (5,90)]
+reducer(student_scores)

@@ -1,39 +1,6 @@
-from mrjob.job import MRJob
-from mrjob.step import MRStep
-
-class Max_temp(MRJob):
-
-    def mapper(self, _, line):
-        # Extract year and temperature from the line
-        year, temp = line.split(',')
-        yield year, float(temp)
-
-    def reducer_find_max_temp(self, year, temps):
-        max_temp = max(temps)
-        yield None, (year, max_temp)
-
-    def reducer_find_year_with_max_temp(self, _, year_temp_pairs):
-        year_with_max_temp = max(year_temp_pairs, key=lambda x: x[1])
-        yield year_with_max_temp
-
-    def steps(self):
-        return [
-            MRStep(mapper=self.mapper, reducer=self.reducer_find_max_temp),
-            MRStep(reducer=self.reducer_find_year_with_max_temp)
-        ]
-
-if __name__ == "__main__":
-    Max_temp.run()
-
-# 1.Make a text file
-# 2.Add year and temp in text
-# 2000,26
-# 2001,27
-# 2002,25
-# 2003,30
-# 2004,24
-# 2005,28
-# 2006,32
-# 2007,26
-# 3. CMD mai vo folder open kr
-# 4. python script.py file.txt 
+use TestDB
+db.TestDB.insertOne({name:"John Doe", age:30})
+db.TestDB.findOne({name:"John Doe"})
+db.TestDB.insertOne({name:"Ron", age:19})
+db.TestDB.updateOne({name:"Ron"}, {$set:{age:21}})
+db.TestDB.deleteOne({name:"Doe"})
